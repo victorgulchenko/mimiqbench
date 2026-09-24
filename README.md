@@ -55,8 +55,28 @@ was sent to a model; [REGISTER.md](REGISTER.md) has each plan and result):
   to real shares than the tally of simulated people (error 0.114 against 0.232; a
   uniform guess scores 0.209).
 
-So far the forecast has held up on headlines and not on subtle wording changes in
-messages. Pages, images and video have no confirmatory result yet.
+**Web pages and flows** (two runs registered here on 2026-09-24 before any held-out item
+was sent to a model):
+
+- Picking the page version that really did better (Wikipedia sign-up, account and
+  donation pages, a charity pledge page): the forecast and the app's call each picked
+  4 of 5 real winners, 80% (interval 38% to 96%). The plan needed all five, so it
+  failed. The miss was the most recent test (July 2026). On these five tests, "pick the
+  new version" was right every time.
+- Flow mode (simulated people using copies of the pages in a real browser) showed both
+  versions working on a sign-up test and a donation test, every person finished each,
+  but it could not tell the versions apart.
+- Next steps of real shoppers (200 held-out steps from recorded shopping sessions): the
+  browsing persona did what the shopper did next 8.0% of the time (5.0% to 12.6%), and
+  its action type lost to always guessing "click" (55.5% against 81.5%). Its clicks
+  were no closer than the average click point of other steps (9.4% against 7.8% within
+  50 px). Giving it the shopper's own profile changed nothing, and five different people
+  chose the same action type 92% of the time.
+
+So far the forecast has held up on headlines, and not on subtle wording changes in
+messages or on web page versions. Flows show whether people can get through a site and
+where they stall; they do not predict which version converts better or what a real
+visitor clicks next. Video has no confirmatory result yet.
 
 Details: [history/2026-09-23-upworthy-headlines](history/2026-09-23-upworthy-headlines).
 
