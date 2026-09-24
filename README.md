@@ -42,9 +42,21 @@ human forecasters wherever the source published their predictions.
   and called 38.4% clear. The plan allowed at most 15% clear, so this check failed too.
   A clear call says which way a difference would go, not whether one exists.
 
-Only headlines have been benchmarked against real outcomes so far: not pages, ads,
-emails or video. Those suites are being built now and will be registered here before
-they are run.
+**Beyond headlines** (five runs registered here on 2026-09-24 before any held-out item
+was sent to a model; [REGISTER.md](REGISTER.md) has each plan and result):
+
+- Ranking real message variants by real behaviour, Mimiq's forecast was no better than
+  chance in four studies: recruiter emails to nurses (Spearman -0.09), honesty oaths
+  (-0.11), flu-vaccine text messages (0.07) and fundraising banners (54% of 37 winner
+  pairs, interval 38% to 69%). Simple rules and lay forecasters did better where the
+  studies measured them. Mimiq's simulated people alone ranked the flu texts at 0.42,
+  the one pass for the people.
+- Survey answers: one stated estimate of an audience's answer shares came much closer
+  to real shares than the tally of simulated people (error 0.114 against 0.232; a
+  uniform guess scores 0.209).
+
+So far the forecast has held up on headlines and not on subtle wording changes in
+messages. Pages, images and video have no confirmatory result yet.
 
 Details: [history/2026-09-23-upworthy-headlines](history/2026-09-23-upworthy-headlines).
 
