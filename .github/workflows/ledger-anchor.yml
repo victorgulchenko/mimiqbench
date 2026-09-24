@@ -1,0 +1,60 @@
+name: Anchor the sealed prediction ledger
+
+# Once a day, publish the head of Mimiq's sealed prediction ledger here.
+# A sealed prediction is a salted hash in a hash chain (mimiqai.com/ledger). Its
+# date comes from Mimiq's own server; this commit, pushed by GitHub's scheduler,
+# is an outside record of how long the chain was and what its head was that day,
+# so seals cannot be added, removed or reordered after the fact unnoticed.
+
+on:
+  schedule:
+    - cron: "17 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ledger-anchor
+  cancel-in-progress: false
+
+jobs:
+  anchor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the public ledger
+        run: |
+          curl -sSf --retry 5 --retry-delay 20 --max-time 30 \
+            https://api.mimiqai.com/api/public/ledger -o ledger/latest.json
+
+      - name: Append today's anchor
+        run: |
+          python3 - <<'PY'
+          import datetime, hashlib, json, pathlib
+          raw = pathlib.Path("ledger/latest.json").read_bytes()
+          data = json.loads(raw)
+          entries = data.get("entries") or []
+          last = entries[-1] if entries else {}
+          anchor = {
+              "date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "entries": len(entries),
+              "last_seq": last.get("seq") or last.get("id"),
+              "head": last.get("chain") or data.get("genesis"),
+              "public_json_sha256": hashlib.sha256(raw).hexdigest(),
+          }
+          with open("ledger/anchors.jsonl", "a") as f:
+              f.write(json.dumps(anchor, sort_keys=True) + "\n")
+          print(anchor)
+          PY
+
+      - name: Commit and push
+        run: |
+          git config user.name "mimiq-ledger-anchor"
+          git config user.email "actions@users.noreply.github.com"
+          git add ledger/
+          head=$(tail -n 1 ledger/anchors.jsonl | python3 -c "import sys,json; d=json.loads(sys.stdin.read()); print(d['entries'], (d['head'] or '')[:12])")
+          git commit -m "Ledger anchor $(date -u +%Y-%m-%d): ${head}"
+          git push
