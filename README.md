@@ -72,6 +72,12 @@ was sent to a model):
   were no closer than the average click point of other steps (9.4% against 7.8% within
   50 px). Giving it the shopper's own profile changed nothing, and five different people
   chose the same action type 92% of the time.
+- After a fix to how flow people choose each step (a third run, on fresh sessions): they
+  stopped typing web addresses (0 of 200 steps, against 12%), and flows still found the
+  broken button on a test sign-up page, but they did what real shoppers did next no more
+  often than before (9.5% against 9.5%; the gain seen in development did not replicate).
+  The shopper's own profile still did not help, and five people still acted far more
+  alike than real shoppers do. Repeating the shopper's previous step beat every version.
 
 So far the forecast has held up on headlines, and not on subtle wording changes in
 messages or on web page versions. Flows show whether people can get through a site and
