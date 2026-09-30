@@ -45,7 +45,7 @@ def classify_recall(raw, human):
         return "unknown"
 
 
-def validate_panel(panel, audience):
+def validate_panel(panel, audience, *, amendment=None):
     """Reject unverifiable eligibility; do not manufacture language/education labels."""
     seen, people = set(), []
     for person in panel.get("personas", []):
@@ -75,8 +75,15 @@ def validate_panel(panel, audience):
                                "languages": person.get("languages", person.get("language"))}, ensure_ascii=False).lower()
         if study in ("R03", "R04", "R05", "R06") and not re.search(r"german|deutsch|\bde-DE\b", evidence, re.I):
             raise StopRun(f"{study}: German-language eligibility is not evidenced for {person['id']}")
-        if study in ("R07", "R08") and not re.search(r"english|\ben-(gb|us)\b", evidence):
-            raise StopRun(f"{study}: English-language eligibility is not evidenced for {person['id']}")
+        if study in ("R07", "R08"):
+            if amendment == "A3":
+                # Residence was checked above. Use the exact registered locale
+                # passed to the session; do not add a language label to a person.
+                locale = {"R07": "en-GB", "R08": "en-US"}[study]
+                if audience.get("locale") != locale:
+                    raise StopRun(f"{study}: English evidence requires residence and registered browser locale {locale}")
+            elif not re.search(r"english|\ben-(gb|us)\b", evidence):
+                raise StopRun(f"{study}: English-language eligibility is not evidenced for {person['id']}")
         if study == "R06":
             subject = r"computer science|computing|informatik"
             label = "computing"
@@ -130,19 +137,26 @@ def extract(visit, person_id, exported, result, *, transport_failure=None, fallb
 def score_observations(data):
     # This is the exact frozen scorer, not a reimplementation of its statistics.
     import importlib.util
-    if data.get("amendment") not in (None, "A1", "A2"):
+    if data.get("amendment") not in (None, "A1", "A2", "A3"):
         raise ValueError("Unsupported scoring amendment")
-    name = "score_a2.py" if data.get("amendment") == "A2" else "score.py"
+    name = "score_a2.py" if data.get("amendment") in ("A2", "A3") else "score.py"
     spec = importlib.util.spec_from_file_location("r1_frozen_scorer", HERE / name)
     scorer = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(scorer)
     truth = read_json(HERE / "human.json")
-    scored = scorer.score(data, truth)
+    def score(value):
+        # A3 changes eligibility only. Feed the unchanged A2 scorer its exact
+        # metadata contract, then label the result with the execution amendment.
+        result = scorer.score(value | {"amendment": "A2"} if value.get("amendment") == "A3" else value, truth)
+        if value.get("amendment") == "A3":
+            result["amendment"] = "A3"
+        return result
+    scored = score(data)
     excluded = copy.deepcopy(data)
     for row in excluded["records"]:
         if row.get("fallback"):
             row.update(value=None, status="technical_failure")
-    sensitivity = scorer.score(excluded, truth)
+    sensitivity = score(excluded)
     completers = {}
     for arm in ("a", "b"):
         rows = [r for r in data["records"] if r["study"] == "R01" and r["arm"] == arm and r["status"] == "observed"]
