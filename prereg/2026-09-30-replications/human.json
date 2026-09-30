@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "unit": "one prespecified contrast per experiment",
+  "studies": [
+    {"id":"R01","group":"LS","fame":"high","a":{"x":73,"n":644},"b":{"x":155,"n":600},"endpoint":"subscription_accepted","source":"Luguri and Strahilevitz 2021 Table 2 and Appendix B"},
+    {"id":"R02","group":"LS","fame":"high","a":{"x":191,"n":1289},"b":{"x":183,"n":607},"endpoint":"initial_offer_accepted","source":"Luguri and Strahilevitz 2021 Table 3"},
+    {"id":"R03","group":"Utz","fame":"high","a":{"rate":0.022,"n":null},"b":{"rate":0.329,"n":null},"rounding_half_width":0.0005,"endpoint":"notice_decision","source":"Utz et al. 2019 corrected Figure 3, desktop, top bar versus bottom-left"},
+    {"id":"R04","group":"Utz","fame":"high","a":{"rate":0.0,"n":null},"b":{"rate":0.119,"n":null},"rounding_half_width":0.0005,"endpoint":"all_optional_allowed","source":"Utz et al. 2019 corrected Figure 4, desktop, categories"},
+    {"id":"R05","group":"Utz","fame":"high","a":{"rate":0.112,"n":null},"b":{"rate":0.170,"n":null},"rounding_half_width":0.0005,"endpoint":"notice_decision","source":"Utz et al. 2019 corrected Figure 6, desktop, no policy link"},
+    {"id":"R06","group":"MB","fame":"lower","a":{"x":12,"n":52},"b":{"x":27,"n":50},"endpoint":"all_optional_allowed","source":"Machuletz and Bohme 2020 Table 5"},
+    {"id":"R07","group":"GSB","fame":"lower","a":{"x":133,"n":218},"b":{"x":120,"n":218},"human_paired":{"00":79,"01":6,"10":19,"11":114},"endpoint":"tracking_allowed","source":"Grassl et al. 2021 Experiment 2 archive, complete avision/quitelight pairs"},
+    {"id":"R08","group":"CAF","fame":"high","a":{"x":299,"n":320,"reported_rate":0.934},"b":{"x":79,"n":312,"reported_rate":0.253},"counts_reconstructed_from_rounding":true,"endpoint":"future_surveys_allowed","source":"Chandrashekar et al. 2023 Table 5, no-default cells"}
+  ]
+}
